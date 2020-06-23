@@ -6,12 +6,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.raka.trendinggitwithdaggerhilt.R
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
  * lINK FOR TUTORIAL
  * https://medium.com/@er.ankitbisht/mvvm-model-view-viewmodel-kotlin-google-jetpack-f02ec7754854
+ * Dagger Hilt
+ * https://blog.mindorks.com/dagger-hilt-tutorial
+ * https://proandroiddev.com/exploring-dagger-hilt-and-whats-main-differences-with-dagger-android-c8c54cd92f18
  */
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

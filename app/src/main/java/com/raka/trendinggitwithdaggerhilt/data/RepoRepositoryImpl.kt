@@ -1,7 +1,8 @@
-package com.raka.trendinggitwithdaggerhilt.repository
+package com.raka.trendinggitwithdaggerhilt.data
 
 import android.content.Context
 import com.raka.myapplication.data.api.ApiClient
+import com.raka.myapplication.data.api.ApiService
 import com.raka.myapplication.data.database.AppDatabase
 import com.raka.myapplication.data.database.ParametersDao
 import com.raka.myapplication.data.model.GitResponse
@@ -14,13 +15,14 @@ import kotlinx.coroutines.flow.flowOn
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class RepoRepositoryImpl(context: Context): RepoRepository {
+class RepoRepositoryImpl @Inject constructor(private val dao: ParametersDao,private val service:ApiService): RepoRepository {
 
-    var dao: ParametersDao = AppDatabase.getInstance(context).parametersDao()
+//    var dao: ParametersDao = AppDatabase.getInstance(context).parametersDao()
 
     fun getRepoList(onResult: (isSuccess: Boolean, response: GitResponse?) -> Unit) {
-        ApiClient.instance.getRepo().enqueue(object : Callback<GitResponse> {
+        service.getRepo().enqueue(object : Callback<GitResponse> {
             override fun onFailure(call: Call<GitResponse>, t: Throwable) {
                 onResult(false, null)
             }
@@ -35,12 +37,14 @@ class RepoRepositoryImpl(context: Context): RepoRepository {
         })
     }
 
-    companion object {
-        private var INSTANCE: RepoRepositoryImpl? = null
-        fun getInstance(context: Context) = INSTANCE ?: RepoRepositoryImpl(context).also {
-            INSTANCE = it
-        }
-    }
+//    companion object {
+//        private var INSTANCE: RepoRepositoryImpl? = null
+//        fun getInstance(context: Context) = INSTANCE
+//            ?: RepoRepositoryImpl(context)
+//                .also {
+//            INSTANCE = it
+//        }
+//    }
 
 //    override fun getRepoListFromServer(): Single<GitResponse> {
 //        return ApiClient.instance.getRepoRx()
@@ -50,7 +54,7 @@ class RepoRepositoryImpl(context: Context): RepoRepository {
 
     override suspend fun getRepoListFromServer(): Flow<GitResponse> {
         return flow {
-            val data = ApiClient.instance.getRepoRx()
+            val data = service.getRepoRx()
             emit(data)
         }.flowOn(Dispatchers.IO)
     }

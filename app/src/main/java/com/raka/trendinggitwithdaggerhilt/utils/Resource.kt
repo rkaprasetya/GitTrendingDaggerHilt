@@ -1,4 +1,4 @@
-package com.raka.trendinggitwithdaggerhilt.view.utils
+package com.raka.trendinggitwithdaggerhilt.utils
 
 import com.raka.myapplication.data.model.State
 import com.raka.myapplication.data.model.State.*

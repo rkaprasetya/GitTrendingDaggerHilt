@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,25 +16,29 @@ import com.raka.myapplication.data.model.State.SUCCESS
 import com.raka.myapplication.data.model.compact.ItemsCompact
 import com.raka.myapplication.view.adapter.RepoListAdapter
 import com.raka.trendinggitwithdaggerhilt.databinding.FragmentRepoListBinding
-import com.raka.trendinggitwithdaggerhilt.view.utils.Resource
+import com.raka.trendinggitwithdaggerhilt.utils.Resource
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_repo_list.*
 
 /**
  * Link to kotlin flow tutorial
  * https://proandroiddev.com/kotlin-flow-on-android-quick-guide-76667e872166
  */
+@AndroidEntryPoint
 class RepoListFragment : Fragment() {
     private lateinit var viewDataBinding: FragmentRepoListBinding
     private lateinit var adapter: RepoListAdapter
+    private val repoListViewModel:RepoListViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewDataBinding = FragmentRepoListBinding.inflate(inflater, container, false).apply {
-            viewmodel =
-                ViewModelProviders.of(this@RepoListFragment).get(RepoListViewModel::class.java)
-            lifecycleOwner = viewLifecycleOwner
-        }
+        viewDataBinding = FragmentRepoListBinding.inflate(inflater, container, false)
+//        viewDataBinding = FragmentRepoListBinding.inflate(inflater, container, false).apply {
+//            viewmodel =
+//                ViewModelProviders.of(this@RepoListFragment).get(RepoListViewModel::class.java)
+//            lifecycleOwner = viewLifecycleOwner
+//        }
         return viewDataBinding.root
     }
 
@@ -53,7 +58,7 @@ class RepoListFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewDataBinding.viewmodel!!.repoListCompact.observe(viewLifecycleOwner, Observer {
+        repoListViewModel.repoListCompact.observe(viewLifecycleOwner, Observer {
             loadResponse(it)
         })
     }
@@ -87,13 +92,10 @@ class RepoListFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        val viewModel = viewDataBinding.viewmodel
-        if (viewModel != null){
             adapter = RepoListAdapter()
             val layoutManager = LinearLayoutManager(activity)
             repo_list_rv.layoutManager = layoutManager
             repo_list_rv.addItemDecoration(DividerItemDecoration(activity,layoutManager.orientation))
             repo_list_rv.adapter = adapter
-        }
     }
 }

@@ -6,9 +6,10 @@ import com.raka.myapplication.repository.RepoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class RepoListUsecase (private val repoListRepository: RepoRepository) {
-    private val mapper = RepoListMapper()
+class RepoListUsecase @Inject constructor (private val repoListRepository: RepoRepository,private val mapper: RepoListMapper) {
+//    private val mapper = RepoListMapper()
     suspend fun getRepoListRemote():Flow<List<ItemsCompact>> {
        val response = repoListRepository.getRepoListFromServer()
         response.collect { data->

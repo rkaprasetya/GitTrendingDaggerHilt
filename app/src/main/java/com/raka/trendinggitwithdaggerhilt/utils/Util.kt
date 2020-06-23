@@ -1,4 +1,4 @@
-package com.raka.trendinggitwithdaggerhilt.view.utils
+package com.raka.trendinggitwithdaggerhilt.utils
 
 import java.io.IOException
 import java.net.InetSocketAddress
