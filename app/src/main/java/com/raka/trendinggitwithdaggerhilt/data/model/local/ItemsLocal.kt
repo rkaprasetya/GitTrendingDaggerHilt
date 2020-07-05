@@ -1,4 +1,4 @@
-package com.raka.myapplication.data.model.local
+package com.raka.trendinggitwithdaggerhilt.data.model.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

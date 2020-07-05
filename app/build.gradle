@@ -35,6 +35,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    //groovy
+    configurations.all {
+        resolutionStrategy.force "org.antlr:antlr4-runtime:4.7.1"
+        resolutionStrategy.force "org.antlr:antlr4-tool:4.7.1"
+    }
+
+//kotlin DSL
+    configurations.all {
+        resolutionStrategy {
+            force("org.antlr:antlr4-runtime:4.7.1")
+            force("org.antlr:antlr4-tool:4.7.1")
+        }
+    }
 }
 
 dependencies {
@@ -74,6 +87,8 @@ dependencies {
     kapt "com.android.databinding:compiler:3.1.4"
     //picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+    //add paging library
+    implementation "androidx.paging:paging-runtime:2.1.2"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

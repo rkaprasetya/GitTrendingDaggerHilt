@@ -1,12 +1,13 @@
 package com.raka.trendinggitwithdaggerhilt.view.ui.repolist
 
-import android.app.Application
 import android.util.Log
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
-import com.raka.myapplication.data.model.compact.ItemsCompact
-import com.raka.trendinggitwithdaggerhilt.domain.RepoListUsecase
-import com.raka.trendinggitwithdaggerhilt.data.RepoRepositoryImpl
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.raka.trendinggitwithdaggerhilt.data.model.compact.ItemsCompact
+import com.raka.trendinggitwithdaggerhilt.domain.RepoListUsecaseImpl
 import com.raka.trendinggitwithdaggerhilt.utils.Resource
 import com.raka.trendinggitwithdaggerhilt.utils.Util
 import kotlinx.coroutines.Dispatchers
@@ -16,29 +17,28 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RepoListViewModel @ViewModelInject constructor (private val repoListUsecase: RepoListUsecase) : ViewModel(){
+class RepoListViewModel @ViewModelInject constructor (private val repoListUsecase: RepoListUsecaseImpl) : ViewModel(){
 //    private val repoListUseCase = RepoListUsecase(RepoRepositoryImpl())
     private val _repoListCompact = MutableLiveData<Resource<List<ItemsCompact>>>()
-    val repoListCompact : LiveData<Resource<List<ItemsCompact>>>
-            get() = _repoListCompact
+    private val _pageListRepoData = MutableLiveData<Resource<PagedList<ItemsCompact>>>()
+    var pagedListRepo :LiveData<PagedList<ItemsCompact>> = repoListUsecase.getPagedList()
+    var stateProcess = repoListUsecase.getStatePagedList()
 
-    init {
-        loadRepoList()
-    }
     private fun loadRepoList(){
         viewModelScope.launch {
             _repoListCompact.value = Resource.loading(null)
             val isInternetAvailable = withContext(Dispatchers.IO){
                 Util.isInternetAvailable()
             }
-
-            if(isInternetAvailable){
-                loadRemoteData()
+            if(!isInternetAvailable){
+                val factory : DataSource.Factory<Int,ItemsCompact> = repoListUsecase.getPagedRepoLocal()
+                val pagedListBuilder:LivePagedListBuilder<Int,ItemsCompact> = LivePagedListBuilder<Int,ItemsCompact>(factory,10)
+                pagedListRepo = pagedListBuilder.build()
             }else{
-                loadLocalData()
             }
         }
     }
+
     private fun loadRemoteData(){
         viewModelScope.launch {
             repoListUsecase.getRepoListRemote()

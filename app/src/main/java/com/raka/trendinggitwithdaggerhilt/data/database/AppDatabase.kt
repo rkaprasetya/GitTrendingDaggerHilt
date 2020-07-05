@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.raka.myapplication.data.model.local.ItemsLocal
+import com.raka.trendinggitwithdaggerhilt.data.model.local.ItemsLocal
 import com.raka.myapplication.view.utils.Constants.Companion.DB_NAME
 
-@Database(entities = [ItemsLocal::class],version = 1)
+@Database(entities = [ItemsLocal::class],version = 2)
 abstract class AppDatabase:RoomDatabase() {
     abstract fun parametersDao(): ParametersDao
     companion object{

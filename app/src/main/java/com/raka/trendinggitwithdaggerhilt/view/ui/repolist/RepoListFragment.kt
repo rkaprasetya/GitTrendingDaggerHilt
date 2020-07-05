@@ -1,6 +1,7 @@
 package com.raka.trendinggitwithdaggerhilt.view.ui.repolist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,12 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.raka.myapplication.data.model.State.LOADING
-import com.raka.myapplication.data.model.State.SUCCESS
-import com.raka.myapplication.data.model.compact.ItemsCompact
-import com.raka.myapplication.view.adapter.RepoListAdapter
+import com.raka.myapplication.data.model.State.*
+import com.raka.trendinggitwithdaggerhilt.data.model.compact.ItemsCompact
+import com.raka.trendinggitwithdaggerhilt.view.adapter.RepoListAdapter
 import com.raka.trendinggitwithdaggerhilt.databinding.FragmentRepoListBinding
 import com.raka.trendinggitwithdaggerhilt.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,33 +34,31 @@ class RepoListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewDataBinding = FragmentRepoListBinding.inflate(inflater, container, false)
-//        viewDataBinding = FragmentRepoListBinding.inflate(inflater, container, false).apply {
-//            viewmodel =
-//                ViewModelProviders.of(this@RepoListFragment).get(RepoListViewModel::class.java)
-//            lifecycleOwner = viewLifecycleOwner
-//        }
         return viewDataBinding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAdapter()
         setupObservers()
-
-//        btn_press.setOnClickListener{
-//            viewDataBinding.viewmodel!!.loadRepoList()
-////            val bundle = Bundle().apply {
-////                putString("message","Halo Apa Kabar")
-////                putString("day","Monday")
-////            }
-////                view.findNavController().navigate(R.id.action_repoListFragment_to_formFragment,bundle)
-//        }
     }
-
     private fun setupObservers() {
-        repoListViewModel.repoListCompact.observe(viewLifecycleOwner, Observer {
-            loadResponse(it)
+        repoListViewModel.stateProcess.observe(viewLifecycleOwner, Observer {
+            if (it != null){
+                when(it.status){
+                    LOADING -> showLoadingBar()
+                    FAIL -> showNoData(it.message!!)
+                    else -> hideLoadingBar()
+                }
+            }
         })
+        repoListViewModel.pagedListRepo.observe(viewLifecycleOwner, Observer {
+            submitData(it)
+        })
+    }
+    private fun submitData(data:PagedList<ItemsCompact>){
+        adapter.submitList(data)
+        repo_list_rv.visibility = View.VISIBLE
+        tv_no_data.visibility = View.GONE
     }
     private fun loadResponse(result:Resource<List<ItemsCompact>>){
         when(result.status){
@@ -72,7 +70,6 @@ class RepoListFragment : Fragment() {
 
     private fun showNoData(message:String){
         repo_list_rv.visibility = View.GONE
-        tv_no_data.visibility = View.VISIBLE
         Toast.makeText(context,message,Toast.LENGTH_LONG).show()
         hideLoadingBar()
     }
@@ -86,9 +83,11 @@ class RepoListFragment : Fragment() {
 
     private fun showLoadingBar(){
         pb_repolist.visibility = View.VISIBLE
+        repo_list_rv.visibility = View.INVISIBLE
     }
     private fun hideLoadingBar(){
         pb_repolist.visibility = View.GONE
+        repo_list_rv.visibility = View.VISIBLE
     }
 
     private fun setupAdapter() {

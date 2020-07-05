@@ -1,11 +1,11 @@
 package com.raka.myapplication.data.database
 
-import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.raka.myapplication.data.model.local.ItemsLocal
+import com.raka.trendinggitwithdaggerhilt.data.model.local.ItemsLocal
 
 @Dao
 interface ParametersDao {
@@ -18,4 +18,7 @@ interface ParametersDao {
 
     @Query("SELECT * from repositorylist")
     suspend fun getLiveRepoList(): List<ItemsLocal>
+
+    @Query("SELECT * from repositorylist")
+    fun getPagedRepoList():DataSource.Factory<Int,ItemsLocal>
 }

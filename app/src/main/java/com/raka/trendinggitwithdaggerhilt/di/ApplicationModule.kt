@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.raka.myapplication.data.api.ApiService
+import com.raka.trendinggitwithdaggerhilt.data.api.ApiService
 import com.raka.myapplication.data.database.AppDatabase
 import com.raka.myapplication.data.database.ParametersDao
 import com.raka.myapplication.view.utils.Constants

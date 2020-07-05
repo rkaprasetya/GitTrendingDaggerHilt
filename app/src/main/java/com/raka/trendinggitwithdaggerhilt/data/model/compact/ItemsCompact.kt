@@ -1,4 +1,4 @@
-package com.raka.myapplication.data.model.compact
+package com.raka.trendinggitwithdaggerhilt.data.model.compact
 
 data class ItemsCompact(val avatar_url:String,
                         val html_url:String,

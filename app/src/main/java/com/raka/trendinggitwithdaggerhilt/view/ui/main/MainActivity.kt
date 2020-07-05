@@ -15,6 +15,10 @@ import javax.inject.Inject
  * Dagger Hilt
  * https://blog.mindorks.com/dagger-hilt-tutorial
  * https://proandroiddev.com/exploring-dagger-hilt-and-whats-main-differences-with-dagger-android-c8c54cd92f18
+ * Paging Library
+ * https://androidwave.com/android-paging-library/
+ * https://medium.com/@harunwangereka/android-paging-library-with-kotlin-coroutines-b96602e3fae3
+ * https://blog.mindorks.com/implementing-paging-library-in-android
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
